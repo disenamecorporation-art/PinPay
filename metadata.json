@@ -1,0 +1,6 @@
+{
+  "name": "PinPay",
+  "description": "Plataforma moderna y segura de remesas internacionales",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

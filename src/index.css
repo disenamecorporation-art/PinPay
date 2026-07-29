@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+:root {
+  --color-pinpay-blue: #00aeef;
+  --color-pinpay-pink: #f43a8e;
+}
+
