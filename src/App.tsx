@@ -88,7 +88,7 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <Footer />
+      <Footer onSelectTab={setActiveTab} />
 
       {/* Modals & Chat Assistant */}
       <TransferModal 

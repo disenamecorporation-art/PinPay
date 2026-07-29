@@ -1,11 +1,15 @@
 import React from 'react';
 import { Shield, Heart } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onSelectTab: (tab: 'home' | 'calculator' | 'admin' | 'dashboard') => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onSelectTab }) => {
   return (
     <footer className="bg-slate-900 text-slate-400 pt-16 pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
           
           {/* Brand info */}
           <div className="lg:col-span-2 space-y-4">
@@ -20,7 +24,7 @@ export const Footer: React.FC = () => {
               />
             </div>
             <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
-              La plataforma líder en remesas internacionales. Conectando familias y potenciando economías con tecnología segura, transparente y rápida.
+              La plataforma líder en remesas internacionales y cálculo P2P automatizado. Conectando familias con seguridad y velocidad.
             </p>
             <div className="flex items-center space-x-3 text-xs text-slate-400">
               <Shield className="w-4 h-4 text-emerald-400" />
@@ -28,36 +32,41 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick links 1 */}
+          {/* Header Navigation Links */}
           <div className="space-y-4">
-            <h4 className="text-white font-bold text-sm tracking-wider uppercase">Compañía</h4>
+            <h4 className="text-white font-bold text-sm tracking-wider uppercase">Navegación</h4>
             <ul className="space-y-2.5 text-sm">
-              <li><a href="#inicio" className="hover:text-[#00aeef] transition-colors">Quiénes somos</a></li>
-              <li><a href="#como-funciona" className="hover:text-[#00aeef] transition-colors">Cómo funciona</a></li>
-              <li><a href="#beneficios" className="hover:text-[#00aeef] transition-colors">Ventajas</a></li>
-              <li><a href="#testimonios" className="hover:text-[#00aeef] transition-colors">Testimonios</a></li>
+              <li>
+                <button onClick={() => { onSelectTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-[#00aeef] transition-colors text-left">
+                  Inicio
+                </button>
+              </li>
+              <li>
+                <button onClick={() => { onSelectTab('calculator'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-[#00aeef] transition-colors text-left">
+                  Calculadora P2P
+                </button>
+              </li>
+              <li>
+                <button onClick={() => { onSelectTab('admin'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-[#00aeef] transition-colors text-left">
+                  Panel Admin
+                </button>
+              </li>
+              <li>
+                <button onClick={() => { onSelectTab('dashboard'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-[#00aeef] transition-colors text-left">
+                  Mi Dashboard
+                </button>
+              </li>
             </ul>
           </div>
 
-          {/* Quick links 2 */}
+          {/* Quick Sections */}
           <div className="space-y-4">
-            <h4 className="text-white font-bold text-sm tracking-wider uppercase">Soporte</h4>
+            <h4 className="text-white font-bold text-sm tracking-wider uppercase">Secciones</h4>
             <ul className="space-y-2.5 text-sm">
-              <li><a href="#rastrear" className="hover:text-[#00aeef] transition-colors">Rastrear envío</a></li>
-              <li><a href="#calculadora" className="hover:text-[#00aeef] transition-colors">Calculadora de tasas</a></li>
-              <li><a href="#ayuda" className="hover:text-[#00aeef] transition-colors">Preguntas frecuentes (FAQ)</a></li>
-              <li><a href="#contacto" className="hover:text-[#00aeef] transition-colors">Centro de ayuda</a></li>
-            </ul>
-          </div>
-
-          {/* Legal / Social */}
-          <div className="space-y-4">
-            <h4 className="text-white font-bold text-sm tracking-wider uppercase">Legal & Privacidad</h4>
-            <ul className="space-y-2.5 text-sm">
-              <li><a href="#terminos" className="hover:text-[#00aeef] transition-colors">Términos y condiciones</a></li>
-              <li><a href="#privacidad" className="hover:text-[#00aeef] transition-colors">Política de privacidad</a></li>
-              <li><a href="#cookies" className="hover:text-[#00aeef] transition-colors">Política de cookies</a></li>
-              <li><a href="#cumplimiento" className="hover:text-[#00aeef] transition-colors">Cumplimiento AML</a></li>
+              <li><a href="#como-funciona" onClick={() => onSelectTab('home')} className="hover:text-[#00aeef] transition-colors">Cómo Funciona</a></li>
+              <li><a href="#beneficios" onClick={() => onSelectTab('home')} className="hover:text-[#00aeef] transition-colors">Ventajas</a></li>
+              <li><a href="#rastrear" onClick={() => onSelectTab('home')} className="hover:text-[#00aeef] transition-colors">Rastrear Envío</a></li>
+              <li><a href="#testimonios" onClick={() => onSelectTab('home')} className="hover:text-[#00aeef] transition-colors">Testimonios</a></li>
             </ul>
           </div>
 
@@ -65,14 +74,13 @@ export const Footer: React.FC = () => {
 
         {/* Bottom bar */}
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} PinPay Technologies Inc. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} PinPay. Hecho por Legaint. Todos los derechos reservados.</p>
           <div className="flex items-center space-x-1">
-            <span>Hecho con</span>
-            <Heart className="w-3.5 h-3.5 text-[#f43a8e] fill-[#f43a8e]" />
-            <span>para conectar al mundo.</span>
+            <span>Diseñado con excelencia para conectar continentes.</span>
           </div>
         </div>
       </div>
     </footer>
   );
 };
+
