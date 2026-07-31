@@ -6,7 +6,7 @@ interface AuthModalProps {
   isOpen: boolean;
   initialMode: 'login' | 'register';
   onClose: () => void;
-  onSuccessLogin?: (name: string, email: string) => void;
+  onSuccessLogin?: (name: string, email: string, role?: 'admin' | 'user') => void;
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, initialMode, onClose, onSuccessLogin }) => {
@@ -39,8 +39,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, initialMode, onClo
         if (signUpError) throw signUpError;
         
         const finalName = name.trim() || (email ? email.split('@')[0] : 'Usuario PinPay');
+        const role = email.toLowerCase().includes('admin') ? 'admin' : 'user';
         if (onSuccessLogin) {
-          onSuccessLogin(finalName, email);
+          onSuccessLogin(finalName, email, role);
         }
         onClose();
       } else {
@@ -53,8 +54,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, initialMode, onClo
         
         if (data.user) {
           const finalName = data.user.user_metadata?.full_name || email.split('@')[0];
+          
+          let role: 'admin' | 'user' = 'user';
+          try {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('role')
+              .eq('id', data.user.id)
+              .single();
+            if (profile && profile.role) {
+              role = profile.role as 'admin' | 'user';
+            }
+          } catch(e) {
+            console.error('Error fetching role', e);
+          }
+
           if (onSuccessLogin) {
-            onSuccessLogin(finalName, email);
+            onSuccessLogin(finalName, email, role);
           }
           onClose();
         }

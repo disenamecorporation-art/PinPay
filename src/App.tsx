@@ -33,10 +33,10 @@ export default function App() {
     setAuthModal((prev) => ({ ...prev, isOpen: false }));
   };
 
-  const handleSuccessLogin = (name: string, email: string) => {
-    const role = email.toLowerCase().includes('admin') ? 'admin' : 'user';
-    setCurrentUser({ name, email, role });
-    setActiveTab(role === 'admin' ? 'admin' : 'dashboard');
+  const handleSuccessLogin = (name: string, email: string, role?: 'admin' | 'user') => {
+    const finalRole = role || (email.toLowerCase().includes('admin') ? 'admin' : 'user');
+    setCurrentUser({ name, email, role: finalRole });
+    setActiveTab(finalRole === 'admin' ? 'admin' : 'dashboard');
   };
 
   const handleLogout = () => {
