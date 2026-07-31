@@ -2,10 +2,11 @@ import React from 'react';
 import { Shield, Heart } from 'lucide-react';
 
 interface FooterProps {
-  onSelectTab: (tab: 'home' | 'calculator' | 'admin' | 'dashboard') => void;
+  onSelectTab: (tab: 'home' | 'calculator' | 'admin' | 'dashboard' | 'vision') => void;
+  currentUser?: { name: string; email: string, role?: 'admin' | 'user' } | null;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onSelectTab }) => {
+export const Footer: React.FC<FooterProps> = ({ onSelectTab, currentUser }) => {
   return (
     <footer className="bg-slate-900 text-slate-400 pt-16 pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,14 +47,23 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab }) => {
                   Calculadora P2P
                 </button>
               </li>
+              {currentUser?.role === 'admin' && (
+                <li>
+                  <button onClick={() => { onSelectTab('admin'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-[#00aeef] transition-colors text-left">
+                    Panel Admin
+                  </button>
+                </li>
+              )}
+              {currentUser?.role === 'user' && (
+                <li>
+                  <button onClick={() => { onSelectTab('dashboard'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-[#00aeef] transition-colors text-left">
+                    Mi Dashboard
+                  </button>
+                </li>
+              )}
               <li>
-                <button onClick={() => { onSelectTab('admin'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-[#00aeef] transition-colors text-left">
-                  Panel Admin
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { onSelectTab('dashboard'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-[#00aeef] transition-colors text-left">
-                  Mi Dashboard
+                <button onClick={() => { onSelectTab('vision'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-[#00aeef] transition-colors text-left">
+                  Tecnología & Visión
                 </button>
               </li>
             </ul>

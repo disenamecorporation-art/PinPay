@@ -14,11 +14,12 @@ import { ChatAssistant } from './components/ChatAssistant';
 import { StandaloneCalculator } from './components/StandaloneCalculator';
 import { AdminPanel } from './components/AdminPanel';
 import { UserDashboard } from './components/UserDashboard';
+import { WhitepaperView } from './components/WhitepaperView';
 
 export default function App() {
   const [isTransferOpen, setIsTransferOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'home' | 'calculator' | 'admin' | 'dashboard'>('home');
-  const [currentUser, setCurrentUser] = useState<{ name: string; email: string } | null>(null);
+  const [activeTab, setActiveTab] = useState<'home' | 'calculator' | 'admin' | 'dashboard' | 'vision'>('home');
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string, role?: 'admin' | 'user' } | null>(null);
   const [authModal, setAuthModal] = useState<{ isOpen: boolean; mode: 'login' | 'register' }>({
     isOpen: false,
     mode: 'login'
@@ -33,8 +34,14 @@ export default function App() {
   };
 
   const handleSuccessLogin = (name: string, email: string) => {
-    setCurrentUser({ name, email });
-    setActiveTab('dashboard');
+    const role = email.toLowerCase().includes('admin') ? 'admin' : 'user';
+    setCurrentUser({ name, email, role });
+    setActiveTab(role === 'admin' ? 'admin' : 'dashboard');
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setActiveTab('home');
   };
 
   return (
@@ -45,6 +52,8 @@ export default function App() {
         onOpenTransfer={() => setIsTransferOpen(true)}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
+        currentUser={currentUser}
+        onLogout={handleLogout}
       />
 
       {activeTab === 'home' ? (
@@ -79,6 +88,8 @@ export default function App() {
         <StandaloneCalculator />
       ) : activeTab === 'admin' ? (
         <AdminPanel />
+      ) : activeTab === 'vision' ? (
+        <WhitepaperView />
       ) : (
         <UserDashboard 
           userName={currentUser?.name || 'Carlos Mendoza'}
@@ -88,7 +99,7 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <Footer onSelectTab={setActiveTab} />
+      <Footer onSelectTab={setActiveTab} currentUser={currentUser} />
 
       {/* Modals & Chat Assistant */}
       <TransferModal 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { X, Mail, Lock, User, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -13,16 +14,56 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, initialMode, onClo
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const finalName = name.trim() || (email ? email.split('@')[0] : 'Usuario PinPay');
-    if (onSuccessLogin) {
-      onSuccessLogin(finalName, email || 'usuario@pinpay.com');
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (mode === 'register') {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: name
+            }
+          }
+        });
+
+        if (signUpError) throw signUpError;
+        
+        const finalName = name.trim() || (email ? email.split('@')[0] : 'Usuario PinPay');
+        if (onSuccessLogin) {
+          onSuccessLogin(finalName, email);
+        }
+        onClose();
+      } else {
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (signInError) throw signInError;
+        
+        if (data.user) {
+          const finalName = data.user.user_metadata?.full_name || email.split('@')[0];
+          if (onSuccessLogin) {
+            onSuccessLogin(finalName, email);
+          }
+          onClose();
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || 'Ocurrió un error. Verifica tus credenciales.');
+    } finally {
+      setLoading(false);
     }
-    onClose();
   };
 
   return (
@@ -99,12 +140,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, initialMode, onClo
             </div>
           </div>
 
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-3 text-xs flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-[#00aeef] hover:bg-[#0098d1] text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-[#00aeef]/25 transition-all text-sm flex items-center justify-center space-x-2 mt-2"
+            disabled={loading}
+            className="w-full bg-[#00aeef] hover:bg-[#0098d1] disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-[#00aeef]/25 transition-all text-sm flex items-center justify-center space-x-2 mt-2"
           >
-            <span>{mode === 'login' ? 'Iniciar Sesión' : 'Registrarse Gratis'}</span>
-            <ArrowRight className="w-4 h-4" />
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                <span>{mode === 'login' ? 'Iniciar Sesión' : 'Registrarse Gratis'}</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </form>
 
